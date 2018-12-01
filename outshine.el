@@ -849,42 +849,50 @@ This function will be hooked to `outline-minor-mode'."
 (defmacro outshine-define-key-with-fallback
     (keymap key def condition &optional mode)
   "Define key with fallback.
+
 Binds KEY to definition DEF in keymap KEYMAP, the binding is
 active when the CONDITION is true. Otherwise turns MODE off and
 re-enables previous definition for KEY. If MODE is nil, tries to
-recover it by stripping off \"-map\" from KEYMAP name."
-  (when (eq (car-safe def) 'quote)
-    (setq def (cadr def)))
-  `(define-key
-     ,keymap
-     ,key
-     (lambda ()
-       (interactive)
-       (if ,condition
-           (call-interactively ',def)
-         (let* ((,(if mode mode
-                    (let* ((keymap-str (symbol-name keymap))
-                           (mode-name-end
-                            (- (string-width keymap-str) 4)))
-                      (if (string=
-                           "-map"
-                           (substring keymap-str mode-name-end))
-                          (intern (substring keymap-str 0 mode-name-end))
-                        (message
-                         "Could not deduce mode name from keymap name")
-                        (intern "dummy-sym"))
-                      )) nil)
-                ;; Check for `<tab>'.  It translates to `TAB' which
-                ;; will prevent `(key-binding ...)' from finding the
-                ;; original binding.
-                (original-func (if (equal (kbd "<tab>") ,key)
-                                   (or (key-binding ,key)
-                                       (key-binding (kbd "TAB")))
-                                 (key-binding ,key))))
-           (condition-case nil
-               (call-interactively original-func)
-             (error nil)))))))
-(put 'outshine-define-key-with-fallback 'lisp-indent-function 1)
+recover it by stripping off \"-map\" from KEYMAP name.
+
+This interns a named function `outshine-kbd-[key-name]' with the
+appropriate docstring so that calling `describe-key' on KEY
+produces a more informative output."
+  (declare (indent defun))
+  (let ((fn-name
+         (intern (format "outshine-kbd-%s"
+                         (if (eq (car-safe key) 'kbd)
+                             (cadr key)
+                           key))))
+        (docstring
+         (format "Run the interactive command `%s' if the following condition \
+is satisfied:\n\n    %s\n
+Otherwise, fallback to the original binding of %s in the current mode."
+                 (cadr def) ;; def is a quoted symbol (quote sym)
+                 condition key))
+        (mode-name
+         (cond (mode mode)
+               ((string-match
+                 (rx (group (1+ any)) "-map" eol) (symbol-name keymap))
+                (intern (match-string 1 (symbol-name keymap))))
+               (t (error "Could not deduce mode name from keymap name")))))
+    `(progn
+       (defun ,fn-name ()
+         ,docstring
+         (interactive)
+         (call-interactively
+          (if ,condition
+              ,def
+            ;; turn mode off and recover the original function
+            (let ((,mode-name nil))
+              ;; Check for `<tab>'.  It translates to `TAB' which
+              ;; will prevent `(key-binding ...)' from finding the
+              ;; original binding.
+              (if (equal (kbd "<tab>") ,key)
+                  (or (key-binding ,key)
+                      (key-binding (kbd "TAB")))
+                (key-binding ,key))))))
+       (define-key ,keymap ,key ',fn-name))))
 
 ;;;;; Normalize regexps
 
