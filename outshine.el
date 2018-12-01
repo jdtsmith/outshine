@@ -2356,6 +2356,10 @@ marking subtree (and subsequently run the tex command)."
   (or (outline-on-heading-p)
       (and (bobp) outshine-org-style-global-cycling-at-bob-p)))
 
+(outshine-define-key-with-fallback outshine-mode-map
+  (kbd "<backtab>") 'outshine-cycle-buffer
+  (or (outline-on-heading-p) (bobp)))
+
 ;; Works on the console too.
 (define-key outshine-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
 
