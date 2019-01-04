@@ -1075,7 +1075,7 @@ recover it by stripping off \"-map\" from KEYMAP name."
      ,key
      (lambda (&optional arg)
        (interactive "P")
-       (if ,condition ,def
+       (if ,condition (call-interactively ,def)
          (let* ((,(if mode mode
                     (let* ((keymap-str (symbol-name keymap))
                            (mode-name-end
@@ -3806,7 +3806,7 @@ marking subtree (and subsequently run the tex command)."
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "TAB")
-  (outshine-cycle arg)
+  'outshine-cycle
   (or (and (bobp) (not (outline-on-heading-p))
            outshine-org-style-global-cycling-at-bob-p)
       (outline-on-heading-p)))
@@ -3816,35 +3816,35 @@ marking subtree (and subsequently run the tex command)."
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-<left>")
-  (outshine-hide-more) (outline-on-heading-p))
+  'outshine-hide-more (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-<right>")
-  (outshine-show-more) (outline-on-heading-p))
+  'outshine-show-more (outline-on-heading-p))
 
 ;;;;;; Headline Insertion
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-RET")
-  (outshine-insert-heading) (outline-on-heading-p))
+  'outshine-insert-heading (outline-on-heading-p))
 
 ;;;;;; Structure Editing
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-S-<left>")
-  (outline-promote) (outline-on-heading-p))
+  'outline-promote (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-S-<right>")
-  (outline-demote) (outline-on-heading-p))
+  'outline-demote (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-S-<up>")
-  (outline-move-subtree-up) (outline-on-heading-p))
+  'outline-move-subtree-up (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
     outshine-mode-map (kbd "M-S-<down>")
-  (outline-move-subtree-down) (outline-on-heading-p))
+  'outline-move-subtree-down (outline-on-heading-p))
 
 ;;;;;; Motion
 
