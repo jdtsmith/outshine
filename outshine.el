@@ -846,14 +846,15 @@ This function will be hooked to `outline-minor-mode'."
 
 ;; copied and adapted from Alexander Vorobiev
 ;; http://www.mail-archive.com/emacs-orgmode@gnu.org/msg70648.html
-(defmacro outshine-define-key
-    (keymap key def condition &optional mode)
+(defmacro outshine-define-key (keymap key def condition &optional mode)
   "Define key with fallback.
 
 Binds KEY to definition DEF in keymap KEYMAP, the binding is
 active when the CONDITION is true. Otherwise turns MODE off and
 re-enables previous definition for KEY. If MODE is nil, tries to
 recover it by stripping off \"-map\" from KEYMAP name.
+
+DEF must be a quoted symbol of an interactive command.
 
 This interns a named function `outshine-kbd-[key-name]' with the
 appropriate docstring so that calling `describe-key' on KEY
@@ -893,6 +894,48 @@ Otherwise, fallback to the original binding of %s in the current mode."
                       (key-binding (kbd "TAB")))
                 (key-binding ,key))))))
        (define-key ,keymap ,key ',fn-name))))
+
+;;;;;; original macro (obsolete)
+
+;; Note: the new macro uses a quoted symbol for the binding DEF, matching
+;; the signature of `define-key'.
+(make-obsolete 'outshine-define-key-with-fallback 'outshine-define-key "3.0")
+(defmacro outshine-define-key-with-fallback
+    (keymap key def condition &optional mode)
+  "Define key with fallback.
+Binds KEY to definition DEF in keymap KEYMAP, the binding is
+active when the CONDITION is true. Otherwise turns MODE off and
+re-enables previous definition for KEY. If MODE is nil, tries to
+recover it by stripping off \"-map\" from KEYMAP name."
+  (declare (indent 2))
+  `(define-key
+     ,keymap
+     ,key
+     (lambda (&optional arg)
+       (interactive "P")
+       (if ,condition ,def
+         (let* ((,(if mode mode
+                    (let* ((keymap-str (symbol-name keymap))
+                           (mode-name-end
+                            (- (string-width keymap-str) 4)))
+                      (if (string=
+                           "-map"
+                           (substring keymap-str mode-name-end))
+                          (intern (substring keymap-str 0 mode-name-end))
+                        (message
+                         "Could not deduce mode name from keymap name")
+                        (intern "dummy-sym"))
+                      )) nil)
+                ;; Check for `<tab>'.  It translates to `TAB' which
+                ;; will prevent `(key-binding ...)' from finding the
+                ;; original binding.
+                (original-func (if (equal (kbd "<tab>") ,key)
+                                   (or (key-binding ,key)
+                                       (key-binding (kbd "TAB")))
+                                 (key-binding ,key))))
+           (condition-case nil
+               (call-interactively original-func)
+             (error nil)))))))
 
 ;;;;; Normalize regexps
 
