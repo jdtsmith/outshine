@@ -69,7 +69,12 @@ The very useful Org speed commands are available in ~outshine~.  To activate the
 
 ** 3.1-pre
 
-Nothing new yet.
+*Added*
++ Add ~outshine-define-key~ macro for defining conditional key bindings (e.g. on headlines). Improves on previous ~outshine-define-key-with-fallback~ macro by interning a named function and matching the function signature of ~define-key~.
++ Bind @@html:<kbd>@@ <backtab> @@html:</kbd>@@ to ~outshine-cycle-buffer~ on headlines
+
+*Deprecated*
++ Declare ~outshine-define-key-with-fallback~ as obsolete, use ~outshine-define-key~ instead
 
 ** 3.0 and earlier
 
