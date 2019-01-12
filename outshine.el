@@ -846,7 +846,7 @@ This function will be hooked to `outline-minor-mode'."
 
 ;; copied and adapted from Alexander Vorobiev
 ;; http://www.mail-archive.com/emacs-orgmode@gnu.org/msg70648.html
-(defmacro outshine-define-key-with-fallback
+(defmacro outshine-define-key
     (keymap key def condition &optional mode)
   "Define key with fallback.
 
@@ -2351,44 +2351,44 @@ marking subtree (and subsequently run the tex command)."
 
 ;;;;;; Visibility Cycling
 
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "TAB") 'outshine-cycle
   (or (outline-on-heading-p)
       (and (bobp) outshine-org-style-global-cycling-at-bob-p)))
 
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "<backtab>") 'outshine-cycle-buffer
   (or (outline-on-heading-p) (bobp)))
 
 ;; Works on the console too.
 (define-key outshine-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
 
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-<left>") 'outshine-hide-more
   (outline-on-heading-p))
 
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-<right>") 'outshine-show-more
   (outline-on-heading-p))
 
 ;;;;;; Headline Insertion
 
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-RET") 'outshine-insert-heading
   (outline-on-heading-p))
 
 ;;;;;; Structure Editing
 
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-S-<left>") 'outline-promote
   (outline-on-heading-p))
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-S-<right>") 'outline-demote
   (outline-on-heading-p))
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-S-<up>") 'outline-move-subtree-up
   (outline-on-heading-p))
-(outshine-define-key-with-fallback outshine-mode-map
+(outshine-define-key outshine-mode-map
   (kbd "M-S-<down>") 'outline-move-subtree-down
   (outline-on-heading-p))
 
