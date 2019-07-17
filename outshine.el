@@ -1767,7 +1767,7 @@ With a numeric prefix ARG, show all headlines up to that level."
               ((save-excursion
                  (beginning-of-line)
                  (looking-at outline-regexp))
-               (max 1 (funcall outline-level)))
+               (max 1 (save-excursion (beginning-of-line) (funcall outline-level))))
               (t 1))))
         (outline-hide-sublevels toplevel))
       (outshine--cycle-message "OVERVIEW")
