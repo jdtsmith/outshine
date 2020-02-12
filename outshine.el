@@ -2170,7 +2170,7 @@ marking subtree (and subsequently run the tex command)."
    (<= (point) (match-end 0))
    (if (functionp outshine-use-speed-commands) (funcall outshine-use-speed-commands) t)))
 
-;; Outline Navigation
+;;;;;;; Outline Navigation
 
 (outshine-define-key outshine-mode-map (kbd "n") (lambda () (interactive) (outshine-speed-move-safe 'outline-next-visible-heading))
   (outshine-run-speed-command-p))
@@ -2187,27 +2187,27 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "b") (lambda () (interactive) (outshine-speed-move-safe 'outline-backward-same-level))
   (outshine-run-speed-command-p))
 
-(outshine-define-key outshine-mode-map (kbd "F") (lambda () (interactive) outshine-next-block)
+(outshine-define-key outshine-mode-map (kbd "F") 'outshine-next-block
   (outshine-run-speed-command-p))
 
-(outshine-define-key outshine-mode-map (kbd "B") (lambda () (interactive) outshine-previous-block)
+(outshine-define-key outshine-mode-map (kbd "B") 'outshine-previous-block
   (outshine-run-speed-command-p))
 
-(outshine-define-key outshine-mode-map (kbd "j") (lambda () (interactive) outshine-navi)
+(outshine-define-key outshine-mode-map (kbd "j") 'outshine-navi
   (outshine-run-speed-command-p))
 
-(outshine-define-key outshine-mode-map (kbd "J") (lambda () (interactive) outshine-imenu)
+(outshine-define-key outshine-mode-map (kbd "J") 'outshine-imenu
   (outshine-run-speed-command-p))
 
-(outshine-define-key outshine-mode-map (kbd "g") (lambda () (interactive) outshine-imenu)
+(outshine-define-key outshine-mode-map (kbd "g") 'outshine-imenu
   (outshine-run-speed-command-p))
 
-;; Outline Visibility
+;;;;;;; Outline Visibility
 
-(outshine-define-key outshine-mode-map (kbd "c") (lambda () (interactive) outshine-cycle)
+(outshine-define-key outshine-mode-map (kbd "c") 'outshine-cycle
   (outshine-run-speed-command-p))
 
-(outshine-define-key outshine-mode-map (kbd "C") (lambda () (interactive) outshine-cycle-buffer)
+(outshine-define-key outshine-mode-map (kbd "C") 'outshine-cycle-buffer
   (outshine-run-speed-command-p))
 
 (outshine-define-key outshine-mode-map (kbd  "r") 'outshine-narrow-to-subtree
@@ -2216,11 +2216,11 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "w") 'widen
   (outshine-run-speed-command-p))
 
-;; Structure Editing
-
+;;;;;;; Structure editing
 
 (outshine-define-key outshine-mode-map (kbd "U") 'outline-move-subtree-up
   (outshine-run-speed-command-p))
+
 ;; [X] FIXME error with oldschool elisp headers. FIXME' is this still relevant?
 (outshine-define-key outshine-mode-map (kbd "D") 'outline-move-subtree-down
   (outshine-run-speed-command-p))
@@ -2243,7 +2243,7 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "#") 'outshine-toggle-comment
   (outshine-run-speed-command-p))
 
-;; Clock Commands
+;;;;;;; Clock Commands
 ;; FIXME need improvements!
 
 (outshine-define-key outshine-mode-map (kbd "I") 'outshine-clock-in
@@ -2252,7 +2252,7 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "O") 'outshine-clock-out
   (outshine-run-speed-command-p))
 
-;;Date & Time Commands
+;;;;;;; Date & Time Commands
 
 (outshine-define-key outshine-mode-map (kbd ".") 'outshine-time-stamp
   (outshine-run-speed-command-p))
@@ -2266,12 +2266,12 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "s") 'outshine-schedule
   (outshine-run-speed-command-p))
 
-;; Exporting
+;;;;;;; Exporting
 
 (outshine-define-key outshine-mode-map (kbd "x") 'outshine-export-dispatch
   (outshine-run-speed-command-p))
 
-;; Meta Data Editing
+;;;;;;; Meta Data Editing
 
 (outshine-define-key outshine-mode-map (kbd "t") 'outshine-todo
   (outshine-run-speed-command-p))
@@ -2315,7 +2315,7 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "E") 'outshine-inc-effort
   (outshine-run-speed-command-p))
 
-;; Agenda Views etc
+;;;;;;; Agenda Views etc
 
 (outshine-define-key outshine-mode-map (kbd "v") 'outshine-agenda
   (outshine-run-speed-command-p))
@@ -2326,7 +2326,7 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd ">") '(outshine-agenda-remove-restriction-lock)
   (outshine-run-speed-command-p))
 
-;; Misc
+;;;;;;; Misc
 
 (outshine-define-key outshine-mode-map (kbd "o") 'outshine-open-at-point
   (outshine-run-speed-command-p))
@@ -2335,7 +2335,7 @@ marking subtree (and subsequently run the tex command)."
   (outshine-run-speed-command-p))
 
 
-;;;; Footer
+;;;;;;  Footer
 
 (provide 'outshine)
 
