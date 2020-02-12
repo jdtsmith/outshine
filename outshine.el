@@ -500,15 +500,6 @@ where speed commands should be active, e.g.:
           (const :tag "At beginning of headline stars" t)
           (function)))
 
-(defcustom outshine-self-insert-cluster-for-undo
-  (or (featurep 'xemacs) (version<= emacs-version "24.1"))
-  "Non-nil means cluster self-insert commands for undo when possible.
-If this is set, then, like in the Emacs command loop, 20 consecutive
-characters will be undone together.
-This is configurable, because there is some impact on typing performance."
-  :group 'outshine
-  :type 'boolean)
-
 (defcustom outshine-latex-classes
   '(("scrbook" . ((1 . "^[[:space:]]*\\\\part\\*?{\\(.+\\)}")
                   (2 . "^[[:space:]]*\\\\chapter\\*?{\\(.+\\)}")
