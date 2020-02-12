@@ -1412,8 +1412,8 @@ If yes, return this character."
 ;;   (setq outshine-agenda-old-org-agenda-files nil))
 
 ;;;;;; Commands
-;;;;;;  Additional outline commands
-;;;;;;   Commands from `outline-magic'
+;;;;;; Additional outline commands
+;;;;;; Commands from `outline-magic'
 
 (defun outshine-next-line ()
   "Forward line, but move over invisible line ends.
@@ -1636,7 +1636,7 @@ With a numeric prefix ARG, show all headlines up to that level."
           (t
            (outline-show-subtree)))))
 
-;;;;;;  Hidden-line-cookies commands
+;;;;;; Hidden-line-cookies commands
 
 (defun outshine-show-hidden-lines-cookies ()
   "Show hidden-lines cookies for all visible and folded headlines."
@@ -1688,7 +1688,7 @@ With a numeric prefix ARG, show all headlines up to that level."
       (outshine-hide-hidden-lines-cookies)
     (outshine-show-hidden-lines-cookies)))
 
-;;;;;;  Hide comment-subtrees
+;;;;;; Hide comment-subtrees
 
 (defun outshine-insert-comment-subtree (&optional arg)
   "Insert new subtree that is tagged as comment."
@@ -1705,7 +1705,7 @@ With a numeric prefix ARG, show all headlines up to that level."
   (let ((outshine-open-comment-trees t))
     (call-interactively 'outshine-cycle)))
 
-;;;;;;  Speed commands utilities
+;;;;;; Speed commands utilities
 
 (defun outshine-speed-move-safe (cmd)
   "Execute CMD, but make sure that the cursor always ends up in a headline.
@@ -1717,7 +1717,7 @@ If not, return to the original position and throw an error."
       (goto-char pos)
       (error "Boundary reached while executing %s" cmd))))
 
-;;;;;;  Other Commands
+;;;;;; Other Commands
 
 (defun outshine-eval-lisp-subtree ()
   "Mark subtree at point and call `eval-region' on it."
@@ -1761,7 +1761,7 @@ This function is the outshine replacement for `org-goto'."
       (navi-search-and-switch)
     (message "Install navi-mode.el for this command to work")))
 
-;;;;;;  Overridden outline commands
+;;;;;; Overridden outline commands
 
 ;; overriding 'outline-insert-heading'
 ;; copied and adapted form outline.el, taking into account modes
@@ -1796,7 +1796,7 @@ This function takes `comment-end' into account."
          (forward-char -1))
     (run-hooks 'outline-insert-heading-hook)))
 
-;;;;;;  iMenu and idoMenu Support
+;;;;;; iMenu and idoMenu Support
 
 (defun outshine-imenu-with-navi-regexp
     (kbd-key &optional PREFER-IMENU-P LAST-PARENTH-EXPR-P)
@@ -1899,7 +1899,7 @@ i.e. the text following the regexp match until the next space character."
                (imenu-choose-buffer-index
                 "Headline: ")))))
 
-;;;;;;  Special Case Latex-mode
+;;;;;; Special Case Latex-mode
 
 (defun outshine-latex-insert-header (&optional buf-or-name pt-or-marker)
   "Insert outshine-header for section at point in latex-buffer.
@@ -2155,7 +2155,7 @@ marking subtree (and subsequently run the tex command)."
 (define-key outshine-mode-map
   [M-down] 'outline-next-visible-heading)
 
-;;;;;; "Speed commands"
+;;;;;; Speed commands
 
 (defun outshine-run-speed-command-p ()
   (and
@@ -2329,7 +2329,7 @@ marking subtree (and subsequently run the tex command)."
 (outshine-define-key outshine-mode-map (kbd "?") 'outshine-speed-command-help
   (outshine-run-speed-command-p))
 
-;;;;;;  Footer
+;;; Footer
 
 (provide 'outshine)
 
