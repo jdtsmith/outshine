@@ -448,8 +448,6 @@ t      Everywhere except in headlines"
   :group 'outshine
   :type 'string)
 
-
-
 ;; old regexp: "[*]+"
 (defvar outshine-default-outline-regexp-base
   ;; MAYBE: Define this with a custom setter.
@@ -1145,8 +1143,6 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
 ;; ;; with max-lisp-eval-depth set to 600
 ;; (add-hook 'outline-view-change-hook
 ;;        'outshine-hide-comment-subtrees)
-
-
 
 (defun outshine-comment-region (beg end &optional arg)
   "Use comment-style that always inserts at BOL.
@@ -1882,7 +1878,6 @@ i.e. the text following the regexp match until the next space character."
         (or outshine-imenu-default-generic-expression
             outshine-imenu-preliminary-generic-expression)))
 
-
 (defun outshine-imenu (&optional PREFER-IMENU-P)
   "Convenience function for calling imenu/idomenu from outshine."
   (interactive "P")
@@ -2333,7 +2328,6 @@ marking subtree (and subsequently run the tex command)."
 
 (outshine-define-key outshine-mode-map (kbd "?") 'outshine-speed-command-help
   (outshine-run-speed-command-p))
-
 
 ;;;;;;  Footer
 
