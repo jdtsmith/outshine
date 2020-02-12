@@ -500,46 +500,6 @@ where speed commands should be active, e.g.:
           (const :tag "At beginning of headline stars" t)
           (function)))
 
-(defcustom outshine-speed-commands-user nil
-  "Alist of additional speed commands.
-This list will be checked before `outshine-speed-commands-default'
-when the variable `outshine-use-speed-commands' is non-nil
-and when the cursor is at the beginning of a headline.
-The car if each entry is a string with a single letter, which must
-be assigned to `self-insert-command' in the global map.
-The cdr is either a command to be called interactively, a function
-to be called, or a form to be evaluated.
-An entry that is just a list with a single string will be interpreted
-as a descriptive headline that will be added when listing the speed
-commands in the Help buffer using the `?' speed command."
-  :group 'outshine
-  :type '(repeat :value ("k" . ignore)
-                 (choice :value ("k" . ignore)
-                         (list :tag "Descriptive Headline" (string :tag "Headline"))
-                         (cons :tag "Letter and Command"
-                               (string :tag "Command letter")
-                               (choice (function)
-                                       (sexp))))))
-
-(defcustom outshine-speed-command-hook
-  '(outshine-speed-command-activate)
-  "Hook for activating speed commands at strategic locations.
-Hook functions are called in sequence until a valid handler is
-found.
-
-Each hook takes a single argument, a user-pressed command key
-which is also a `self-insert-command' from the global map.
-
-Within the hook, examine the cursor position and the command key
-and return nil or a valid handler as appropriate.  Handler could
-be one of an interactive command, a function, or a form.
-
-Set `outshine-use-speed-commands' to non-nil value to enable this
-hook.  The default setting is `outshine-speed-command-activate'."
-  :group 'outshine
-  :version "24.1"
-  :type 'hook)
-
 (defcustom outshine-self-insert-cluster-for-undo
   (or (featurep 'xemacs) (version<= emacs-version "24.1"))
   "Non-nil means cluster self-insert commands for undo when possible.
@@ -1134,33 +1094,6 @@ Compatibility with Emacs versions <25."
   (outshine-font-lock-flush))
 
 ;;;;;; Functions for speed-commands
-
-;; copied and modified from org-mode.el
-(defun outshine-print-speed-command (e)
-  (if (> (length (car e)) 1)
-      (progn
-        (princ "\n")
-        (princ (car e))
-        (princ "\n")
-        (princ (make-string (length (car e)) ?-))
-        (princ "\n"))
-    (princ (car e))
-    (princ "   ")
-    (if (symbolp (cdr e))
-        (princ (symbol-name (cdr e)))
-      (prin1 (cdr e)))
-    (princ "\n")))
-
-(defun outshine-speed-command-activate (keys)
-  "Hook for activating single-letter speed commands.
-`outshine-speed-commands-default' specifies a minimal command set.
-Use `outshine-speed-commands-user' for further customization."
-  (when (or (and (bolp)
-                 (looking-at outline-regexp))
-            (and (functionp outshine-use-speed-commands)
-                 (funcall outshine-use-speed-commands)))
-    (cdr (assoc keys (append outshine-speed-commands-user
-                             outshine-speed-commands-default)))))
 
 (defun outshine-defkey (keymap key def)
   "Define a KEY in a KEYMAP with definition DEF."
@@ -2244,7 +2177,7 @@ marking subtree (and subsequently run the tex command)."
    (outline-on-heading-p)
    (>= (point) (match-beginning 0))
    (<= (point) (match-end 0))
-   (if (eq t outshine-use-speed-commands) t (funcall outshine-use-speed-commands))))
+   (if (functionp outshine-use-speed-commands) (funcall outshine-use-speed-commands) t)))
 
 ;; Outline Navigation
 
