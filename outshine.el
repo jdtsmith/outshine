@@ -1,11 +1,11 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
-;; Copyright (c) 2013-2019 Thorsten Jolitz and contributors.
+;; Copyright (c) 2013-2020 Thorsten Jolitz and contributors.
 
 ;; Author: Thorsten Jolitz
 ;; Maintainer: Thibault Polge <thibault@thb.lt>
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
-;; Version: 3.1-pre
+;; Version: 4.0-pre
 ;; URL: https://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
 ;; Licence: GPL2+
