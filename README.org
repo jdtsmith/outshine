@@ -86,6 +86,14 @@ If you experience issues with Emacs not recognizing these bindings when running 
 *Added*
 + Add ~outshine-define-key~ macro for defining conditional key bindings (e.g. on headlines). Improves on previous ~outshine-define-key-with-fallback~ macro by interning a named function and matching the function signature of ~define-key~.
 + Bind @@html:<kbd>@@ <backtab> @@html:</kbd>@@ to ~outshine-cycle-buffer~ on headlines
++ Added ~outshine-outline-extra-face~ to permit styling the header lines initial comment + header match on header lines.  This value can be a single value (a face or face-equivalent property list), or a list of values (with length the same as the max header depth).  You could use this with e.g. ~:overline~ and ~:extend~ face properties to style full width separators.  (#90)
+
+*Fixed*
++ More fully override Imenu configuration when using ~outshine-imenu~.  ([[https://github.com/alphapapa/outshine/pull/93][#93]].  Thanks to [[https://github.com/dankessler][Dan Kessler]].)
++ Fix promotion/demotion of headers, which was incorrectly padding with space (#90).
+
+*Fixed*
++ More fully override Imenu configuration when using ~outshine-imenu~.  ([[https://github.com/alphapapa/outshine/pull/93][#93]].  Thanks to [[https://github.com/dankessler][Dan Kessler]].)
 
 *Deprecated*
 + Declare ~outshine-define-key-with-fallback~ as obsolete, use ~outshine-define-key~ instead

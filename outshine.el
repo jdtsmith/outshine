@@ -528,6 +528,32 @@ poutshine-level-* faces."
   :group 'outshine
   :type 'boolean)
 
+(defcustom outshine-outline-extra-face nil
+  "Extra face information for initial comment header.
+Face information for the initial comment and
+outline-regexp-matched portion of the header line (e.g. ';; * ').
+Set to a single face or property list of face attributes, or a
+list of such faces/attribute p-lists, up to one per header depth
+level.
+
+Any element can be t to re-use the same face as the rest of the
+header line, at highest priority.  Otherwise, faces will be
+appended to any existing faces in the buffer (with lowest
+priority).  If a list of faces is shorter than the number of
+levels set, the list will be wrapped (e.g. a list of two
+faces/attribute plists will alternate)."
+  :group 'outshine
+  :type '(choice
+          (const :tag "None" nil)
+          (const :tag "Same as Header" t)
+          (choice :tag "Single face or face attribute plist"
+                  (face :tag "Face")
+                  (plist :tag "Attributes"))
+          (repeat
+           (choice :tag "Single face or face attribute plist"
+		   (face :tag "Face")
+		   (plist :tag "Attributes")))))
+
 ;; was "[][+]"
 (defcustom outshine-regexp-special-chars
   "[][}{,+[:digit:]\\]"
@@ -787,7 +813,7 @@ Don't use this function, the public interface is
     (and outshine-imenu-show-headlines-p
          (set (make-local-variable
                'outshine-imenu-preliminary-generic-expression)
-              `((nil ,(concat out-regexp "\\(.*$\\)") 1)))
+              `((nil ,(concat out-regexp " \\(.*$\\)") 1)))
          (if imenu-generic-expression
              (add-to-list 'imenu-generic-expression
                           (car outshine-imenu-preliminary-generic-expression))
@@ -1027,8 +1053,7 @@ Based on `comment-start' and `comment-add'."
                     (if outshine-enforce-no-comment-padding-p
                         ""
                       (outshine-calc-comment-padding))))
-          outshine-normalized-outline-regexp-base
-          " "))
+          outshine-normalized-outline-regexp-base))
 
 ;; TODO how is this called (match-data?) 'looking-at' necessary?
 (defun outshine-calc-outline-level ()
@@ -1196,64 +1221,30 @@ Compatibility with Emacs versions <25."
 
 (defun outshine-fontify-headlines (outline-regexp)
   "Calculate heading regexps for font-lock mode."
-  (let* ((outline-rgxp (substring outline-regexp 0 -8))
-         (heading-1-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{1\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-2-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{2\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-3-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{3\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-4-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{4\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-5-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{5\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-6-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{6\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-7-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{7\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (heading-8-regexp
-          (format "%s%s%s%s"
-                  outline-rgxp
-                  "\\{8\\} \\(.*"
-                  (if outshine-fontify-whole-heading-line "\n?" "")
-                  "\\)"))
-         (font-lock-new-keywords
-          `((,heading-1-regexp 1 'outshine-level-1 t)
-            (,heading-2-regexp 1 'outshine-level-2 t)
-            (,heading-3-regexp 1 'outshine-level-3 t)
-            (,heading-4-regexp 1 'outshine-level-4 t)
-            (,heading-5-regexp 1 'outshine-level-5 t)
-            (,heading-6-regexp 1 'outshine-level-6 t)
-            (,heading-7-regexp 1 'outshine-level-7 t)
-            (,heading-8-regexp 1 'outshine-level-8 t))))
+  (let* ((outline-regexp (substring outline-regexp 0 -7))
+         (font-lock-new-keywords 
+	  (cl-loop for i downfrom 8 to 1
+                   with match-num = (if (eq outshine-outline-extra-face t) 0 2)
+                   for face-spec = (intern-soft (format "outshine-level-%d" i))
+		   for header-highlight = `(,match-num ',face-spec t)
+                   for extra-outline-match-highlight =
+                   (and outshine-outline-extra-face
+                        (not (eq outshine-outline-extra-face t))
+			`((1 ',(if (and (consp
+					 outshine-outline-extra-face)
+					(not (keywordp ; could be a face plist
+					      (car outshine-outline-extra-face))))
+				   (nth (1- i)
+                                        outshine-outline-extra-face)
+				 outshine-outline-extra-face)
+			     append)))
+		   collect `(,(format
+                               "^\\(%s\\{%d\\}\\)\\( .*%s\\)" ;; space = important
+			       outline-regexp i
+			       (if outshine-fontify-whole-heading-line
+                                   "\n?" ""))
+			     ,header-highlight
+                             ,@extra-outline-match-highlight))))
 
     (add-to-list 'outshine-font-lock-keywords font-lock-new-keywords)
     (font-lock-add-keywords nil font-lock-new-keywords)
@@ -2143,6 +2134,7 @@ i.e. the text following the regexp match until the next space character."
               outshine-imenu-generic-expression)
              (imenu-prev-index-position-function nil)
              (imenu-extract-index-name-function nil)
+             (imenu-create-index-function 'imenu-default-create-index-function)
              (imenu-auto-rescan t)
              (imenu-auto-rescan-maxout 360000))
         ;; prefer idomenu
@@ -2173,6 +2165,7 @@ i.e. the text following the regexp match until the next space character."
           outshine-imenu-default-generic-expression)
          (imenu-prev-index-position-function nil)
          (imenu-extract-index-name-function nil)
+         (imenu-create-index-function 'imenu-default-create-index-function)
          (imenu-auto-rescan t)
          (imenu-auto-rescan-maxout 360000))
     ;; prefer idomenu
