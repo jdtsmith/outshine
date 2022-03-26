@@ -87,6 +87,9 @@ If you experience issues with Emacs not recognizing these bindings when running 
 + Add ~outshine-define-key~ macro for defining conditional key bindings (e.g. on headlines). Improves on previous ~outshine-define-key-with-fallback~ macro by interning a named function and matching the function signature of ~define-key~.
 + Bind @@html:<kbd>@@ <backtab> @@html:</kbd>@@ to ~outshine-cycle-buffer~ on headlines
 
+*Fixed*
++ More fully override Imenu configuration when using ~outshine-imenu~.  ([[https://github.com/alphapapa/outshine/pull/93][#93]].  Thanks to [[https://github.com/dankessler][Dan Kessler]].)
+
 *Deprecated*
 + Declare ~outshine-define-key-with-fallback~ as obsolete, use ~outshine-define-key~ instead
 
